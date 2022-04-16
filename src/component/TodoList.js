@@ -2,20 +2,20 @@ import React, { Component } from 'react';
 
 class TodoList extends Component {
   state = {
-    list: []
+    list: [],
+    value: ''
   }
-  //创建ref，这样就能很方便拿到input的值
-  myRef = React.createRef()
 
   handleAdd = () => {
     //此处不能直接对state.list进行更改，需要新定义一个数组，浅拷贝
     let newList = [...this.state.list]
 
     //获取input的值
-    if (this.myRef.current.value) {
+    if (this.state.value) {
       let newItem = {
         id: Math.random() * 1000000, //一般该值由后端给出，此处使用随机定义
-        content: this.myRef.current.value
+        content: this.state.value,
+        checked: false
       }
       newList.push(newItem)
       this.setState({
@@ -23,11 +23,21 @@ class TodoList extends Component {
       })
 
       //添加后将输入框清空
-      this.myRef.current.value = ''
+      this.setState({ value: '' })
     }
 
   }
 
+  // 选中待办事项
+  handleCheck = index => {
+    let newList = [...this.state.list]
+    newList[index].checked = !newList[index].checked
+    this.setState({
+      list: newList
+    })
+  }
+
+  // 删除待办事项
   handleDelete = index => {
     let newList = this.state.list.slice()
     //删除数组index处的一个元素
@@ -36,17 +46,30 @@ class TodoList extends Component {
       list: newList
     })
   }
+
   render() {
     return (
       <div>
-        <input ref={this.myRef} />
+        <input
+          value={this.state.value}
+          onChange={e => {
+            this.setState({
+              value: e.target.value
+            })
+          }}
+        />
         <button onClick={() => this.handleAdd()}>添加</button>
         <ul>
           {
-            this.state.list.map((item, index) => <li key={item.id}>
-              {item.content}
-              <button onClick={() => this.handleDelete(index)}>删除</button>
-            </li>)
+            this.state.list.map((item, index) =>
+              <li key={item.id} style={item.checked ? { 'text-decoration': 'line-through' } : null}>
+                <input type='checkbox' checked={item.checked} onClick={() => this.handleCheck(index)} />
+                {item.content}
+                <button
+                  onClick={() => this.handleDelete(index)}>删除
+                </button>
+              </li>
+            )
           }
         </ul>
 
