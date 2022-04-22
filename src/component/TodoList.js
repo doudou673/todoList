@@ -52,6 +52,7 @@ class TodoList extends Component {
       <div>
         <input
           value={this.state.value}
+          style={{ margin: '10px' }}
           onChange={e => {
             this.setState({
               value: e.target.value
@@ -59,14 +60,18 @@ class TodoList extends Component {
           }}
         />
         <button onClick={() => this.handleAdd()}>添加</button>
-        <ul>
+        <ul style={{ margin: '10px' }}>
           {
             this.state.list.map((item, index) =>
-              <li key={item.id} style={item.checked ? { 'text-decoration': 'line-through' } : null}>
-                <input type='checkbox' checked={item.checked} onClick={() => this.handleCheck(index)} />
+              <li key={item.id} style={item.checked ? { textDecoration: 'line-through' } : null}>
+                <input
+                  type='checkbox'
+                  checked={item.checked}
+                  onChange={() => this.handleCheck(index)}
+                />
                 {item.content}
-                <button
-                  onClick={() => this.handleDelete(index)}>删除
+                <button onClick={() => this.handleDelete(index)} style={{margin:'10px'}}>
+                  删除
                 </button>
               </li>
             )
@@ -75,7 +80,7 @@ class TodoList extends Component {
 
         {/* 如果没有待办事项则显示 */}
         {
-          this.state.list.length === 0 && <div>暂无待办事项</div>
+          this.state.list.length === 0 && <div style={{ margin: '10px' }}>暂无待办事项</div>
         }
       </div>
     );
